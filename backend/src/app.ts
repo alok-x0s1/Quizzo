@@ -2,6 +2,7 @@ import express, { Express } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { config } from "./config/config";
+import session from "express-session";
 
 const app: Express = express();
 
@@ -12,12 +13,30 @@ app.use(
 	})
 );
 
+app.use(
+	session({
+		secret: config.secretKey,
+		resave: false,
+		saveUninitialized: true,
+		cookie: { secure: false },
+	})
+);
+
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
-+app.use(cookieParser());
+app.use(cookieParser());
+
+// Import routes
+import userRouter from "./routes/user.route";
+import quizRouter from "./routes/quiz.route";
+
+// Define routes
+app.use("/api/users", userRouter);
+app.use("/api/quizzes", quizRouter);
 
 app.get("/api", (req, res) => {
 	res.status(200).json({
+		success: true,
 		message: "Hello from Quizzo API",
 	});
 });

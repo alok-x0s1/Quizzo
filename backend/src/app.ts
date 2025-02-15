@@ -18,7 +18,7 @@ app.use(
 		secret: config.secretKey,
 		resave: false,
 		saveUninitialized: true,
-		cookie: { secure: false },
+		cookie: { secure: true },
 	})
 );
 
@@ -34,7 +34,7 @@ import quizRouter from "./routes/quiz.route";
 app.use("/api/users", userRouter);
 app.use("/api/quizzes", quizRouter);
 
-app.get("/api", (req, res) => {
+app.get("/", (req, res) => {
 	res.status(200).json({
 		success: true,
 		message: "Hello from Quizzo API",

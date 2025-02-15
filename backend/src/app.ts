@@ -2,7 +2,6 @@ import express, { Express } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { config } from "./config/config";
-import session from "express-session";
 
 const app: Express = express();
 
@@ -10,15 +9,6 @@ app.use(
 	cors({
 		origin: [`${config.clientUrl}`],
 		credentials: true,
-	})
-);
-
-app.use(
-	session({
-		secret: config.secretKey,
-		resave: false,
-		saveUninitialized: true,
-		cookie: { secure: true },
 	})
 );
 

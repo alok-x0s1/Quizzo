@@ -4,7 +4,7 @@ import { errorResponse, successResponse } from "../utils/response";
 
 const getQuizzes = async (req: Request, res: Response) => {
 	try {
-		const teacherId = req.session.userId;
+		const teacherId = req.user?.id;
 		if (!teacherId) {
 			errorResponse(res, 401, "Unauthorized, Please login first");
 			return;
@@ -25,7 +25,7 @@ const getQuizzes = async (req: Request, res: Response) => {
 
 const createQuiz = async (req: Request, res: Response) => {
 	try {
-		const teacherId = req.session.userId;
+		const teacherId = req.user?.id;
 		if (!teacherId) {
 			errorResponse(res, 401, "Unauthorized, Please login first");
 			return;
@@ -54,7 +54,7 @@ const createQuiz = async (req: Request, res: Response) => {
 
 const updateQuiz = async (req: Request, res: Response) => {
 	try {
-		const teacherId = req.session.userId;
+		const teacherId = req.user?.id;
 		if (!teacherId) {
 			errorResponse(res, 401, "Unauthorized, Please login first");
 			return;
@@ -91,7 +91,7 @@ const updateQuiz = async (req: Request, res: Response) => {
 
 const deleteQuiz = async (req: Request, res: Response) => {
 	try {
-		const teacherId = req.session.userId;
+		const teacherId = req.user?.id;
 		if (!teacherId) {
 			errorResponse(res, 401, "Unauthorized, Please login first");
 			return;
@@ -118,7 +118,7 @@ const deleteQuiz = async (req: Request, res: Response) => {
 
 const getQuizById = async (req: Request, res: Response) => {
 	try {
-		const teacherId = req.session.userId;
+		const teacherId = req.user?.id;
 		if (!teacherId) {
 			errorResponse(res, 401, "Unauthorized, Please login first");
 			return;

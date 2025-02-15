@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { errorResponse, successResponse } from "../utils/response";
 import prisma from "../config/prisma";
 import bcrypt from "bcryptjs";
+import { cookieOptions } from "../utils/cookie";
+import { generateToken } from "../utils/jwt";
 
 const registerUser = async (req: Request, res: Response) => {
 	try {
@@ -31,7 +33,9 @@ const registerUser = async (req: Request, res: Response) => {
 			},
 		});
 
-		req.session.userId = user.id;
+		const token = generateToken(user.id, user.username);
+
+		res.cookie("token", token, cookieOptions);
 		successResponse(res, 201, "User created successfully", user.id);
 	} catch (error) {
 		console.error(error);
@@ -65,7 +69,8 @@ const loginUser = async (req: Request, res: Response) => {
 			return;
 		}
 
-		req.session.userId = user.id;
+		const token = generateToken(user.id, user.username);
+		res.cookie("token", token, cookieOptions);
 
 		successResponse(res, 200, "Logged in successfully", user.id);
 	} catch (error) {
@@ -76,14 +81,8 @@ const loginUser = async (req: Request, res: Response) => {
 
 const logoutUser = async (req: Request, res: Response) => {
 	try {
-		req.session.destroy((err) => {
-			if (err) {
-				console.error(err);
-				errorResponse(res, 500, "Internal server error");
-				return;
-			}
-			successResponse(res, 200, "Logged out successfully");
-		});
+		res.clearCookie("token");
+		successResponse(res, 200, "Logged out successfully");
 	} catch (error) {
 		console.error(error);
 		errorResponse(res, 500, "Internal server error");

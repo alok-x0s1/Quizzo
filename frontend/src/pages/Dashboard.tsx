@@ -35,17 +35,13 @@ const Dashboard = () => {
 				const res = await axios.get("/quizzes");
 				if (res.status === 200) {
 					setQuizzes(res.data.data);
-					toast({
-						title: "Success",
-						description: "Quizzes loaded successfully.",
-					});
 				}
 			} catch (error) {
 				const axiosError = error as AxiosError<ErrorResponse>;
 				const errorMessage = axiosError.response?.data.message;
 
 				toast({
-					title: "Signup failed.",
+					title: "Error",
 					description:
 						errorMessage ??
 						"An error occurred while fetching quizzes.",

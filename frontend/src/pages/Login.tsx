@@ -18,10 +18,23 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "@/utils/axios";
 import { AxiosError } from "axios";
 import { ErrorResponse } from "@/types/apiResponse";
+import { useUser } from "@/context/UserContext";
+import { useEffect } from "react";
 
 const Login = () => {
 	const navigate = useNavigate();
 	const { toast } = useToast();
+	const { user, setUser } = useUser();
+
+	useEffect(() => {
+		if (user) {
+			toast({
+				title: "Already Logged In",
+				description: "Redirecting to your dashboard...",
+			});
+			navigate("/dashboard");
+		}
+	}, [user]);
 
 	const form = useForm<z.infer<typeof loginFormSchema>>({
 		resolver: zodResolver(loginFormSchema),
@@ -35,10 +48,7 @@ const Login = () => {
 		try {
 			const res = await axios.post("/users/login", values);
 			if (res.status === 200) {
-				toast({
-					title: "Login Successful",
-					description: "You have successfully logged in.",
-				});
+				setUser(res.data.data);
 				navigate("/dashboard");
 			}
 		} catch (error) {

@@ -36,7 +36,10 @@ const registerUser = async (req: Request, res: Response) => {
 		const token = generateToken(user.id, user.username);
 
 		res.cookie("token", token, cookieOptions);
-		successResponse(res, 201, "User created successfully", user.id);
+		successResponse(res, 201, "User created successfully", {
+			id: user.id,
+			username: user.username,
+		});
 	} catch (error) {
 		console.error(error);
 		errorResponse(res, 500, "Internal server error");

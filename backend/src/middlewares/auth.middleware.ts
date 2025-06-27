@@ -30,6 +30,9 @@ const isLoggedIn = async (req: Request, res: Response, next: NextFunction) => {
 			where: {
 				id: decoded.id,
 			},
+			omit: {
+				password: true,
+			}
 		});
 
 		if (!user) {

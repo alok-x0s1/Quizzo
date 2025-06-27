@@ -72,7 +72,10 @@ const loginUser = async (req: Request, res: Response) => {
 		const token = generateToken(user.id, user.username);
 		res.cookie("token", token, cookieOptions);
 
-		successResponse(res, 200, "Logged in successfully", user.id);
+		successResponse(res, 200, "Logged in successfully", {
+			id: user.id,
+			username: user.username,
+		});
 	} catch (error) {
 		console.error(error);
 		errorResponse(res, 500, "Internal server error");
@@ -89,4 +92,33 @@ const logoutUser = async (req: Request, res: Response) => {
 	}
 };
 
-export { registerUser, loginUser, logoutUser };
+const getUser = async (req: Request, res: Response) => {
+	try {
+		const userId = req.user?.id;
+		if (!userId) {
+			errorResponse(res, 401, "Unauthorized, Please login first");
+			return;
+		}
+
+		const user = await prisma.user.findUnique({
+			where: {
+				id: userId,
+			},
+			omit: {
+				password: true,
+			},
+		});
+
+		if (!user) {
+			errorResponse(res, 404, "User not found");
+			return;
+		}
+
+		successResponse(res, 200, "User fetched successfully", user);
+	} catch (error) {
+		console.error(error);
+		errorResponse(res, 500, "Internal server error");
+	}
+};
+
+export { registerUser, loginUser, logoutUser, getUser };
